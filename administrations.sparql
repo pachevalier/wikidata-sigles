@@ -1,0 +1,9 @@
+SELECT ?term ?description ?source ?url_source WHERE {
+  ?item (wdt:P31/(wdt:P279*)) wd:Q31728;
+    wdt:P17 wd:Q142 ;
+   wdt:P1813 ?term.
+  ?item rdfs:label ?description filter (lang(?description) = "fr") .
+  BIND(?item AS ?url_source).
+  VALUES ?source {"Wikidata"}.
+}
+ORDER BY (?term)
