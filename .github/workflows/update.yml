@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name:
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  schedule:
+    - cron: "17 17 * * *"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Get the data
+      run: |
+      curl -G https://query.wikidata.org/bigdata/namespace/wdq/sparql --data-urlencode query="$(< administrations.sparql)" -H 'Accept: text/csv' > wikidata-sigles-administrations.csv
+  
+    - name: Push to data.gouv.fr
+      run: |
+        curl -H "Accept:application/json" \
+          -H "X-Api-Key:$DATA_GOUV_API_KEY" \
+          -F "file=@wikidata-sigles-administrations.csv" \
+          -X POST $API/datasets/$DATASET_ID/resources/$RESOURCE/upload/
+      env:
+        DATA_GOUV_API_KEY: ${{ secrets.DATAGOUV_API_KEY }}
+        API: "https://www.data.gouv.fr/api/1"
+        DATASET_ID: "5f10abd45b3b4e87f947e9d4"
+        RESOURCE: "6bbf9c18-73cc-4aeb-baa9-6de5c2cb099a"
