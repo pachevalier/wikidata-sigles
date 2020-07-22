@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Get the data
       run: |
-      curl -G https://query.wikidata.org/bigdata/namespace/wdq/sparql --data-urlencode query="$(< administrations.sparql)" -H 'Accept: text/csv' > wikidata-sigles-administrations.csv
+        curl -G https://query.wikidata.org/bigdata/namespace/wdq/sparql --data-urlencode query="$(< administrations.sparql)" -H 'Accept: text/csv' > wikidata-sigles-administrations.csv
   
     - name: Push to data.gouv.fr
       run: |
